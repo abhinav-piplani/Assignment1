@@ -1,0 +1,83 @@
+---
+title: "Vignette 1"
+author: "Abhinav Piplani"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Vignette Info
+
+This vignette provides a meaningful description of the package Assignment 1 and how it should be used. The usage of all the functions a re decsribed one by one
+
+
+
+```{r,   message=F, warning=F}
+ library(readr)
+ library(dplyr)
+ library(tidyr)
+ library(maps)
+library(knitr)
+library(Assignment1)
+
+# opts_knit$set(root.dir=normalizePath('../'))
+
+```
+
+Read Data for accidents occuring in 2013
+
+
+
+```{r, message=F, warning=F}
+# attach(accidents.2013)
+# mydata <- accidents.2013
+
+#mydata <-read.csv(system.file(file.path("exdata","accident_2013.csv.bz2"), package="Assignment1"))
+  #read.csv("accident_2013.csv.bz2")
+
+mydata <- fars_read("accident_2013.csv.bz2")
+#mydata <- fars_read(system.file(file.path("exdata","accident_2013.csv.bz2"), package="Assignment1"))
+str(mydata)
+#mydata <- fars_read_years(2014)
+```
+
+
+Generates a filename (character) in the format similar to other files given as a part of the 1st
+assignment of the course 'Building R Packages" on Coursera.
+
+
+
+```{r, message=F, warning=F}
+myfilename <- make_filename(2020)
+
+```
+
+Subsetting Year & Month variables from the data for 2014
+
+
+```{r, fig.show='hold'}
+  mydata <- fars_read_years(2014)
+  #mydata <- fars_summarize_years(2013)
+  str(mydata)
+```
+
+
+Summarizes Year & Month variables from the data for year 2014 
+
+```{r, fig.show='hold'}
+ mydata <- fars_summarize_years(2014)
+ str(mydata)
+```
+
+
+Plots accidents on a state map for state number 55, year 2013
+
+```{r, fig.show='hold'}
+ mydata <- fars_map_state(55, 2013)
+  str(mydata)
+```
+
+

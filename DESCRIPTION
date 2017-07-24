@@ -2,13 +2,15 @@ Package: Assignment1
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Abhinav Piplani [aut, cre] , <abhinav.piplani@yahoo.co.in>
+Maintainer: Abhinav Piplani [aut, cre] , <abhinav.piplani@yahoo.co.in>
+Description: The package is created as a requirement of the coursera specialization - Mastering Software Developing in R, 
+            course - Building R Package. This package provides set of functions to analyze fatal accidents in US from
+            2013 - 2015.
+License: GNU
 Encoding: UTF-8
 LazyData: true
-Suggests: knitr,
-    rmarkdown
+Suggests: knitr,    rmarkdown
+Imports: readr, dplyr, tidyr, maps, tidytext
 VignetteBuilder: knitr
+RoxygenNote: 6.0.1

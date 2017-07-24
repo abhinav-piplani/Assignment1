@@ -21,6 +21,8 @@ This vignette provides a meaningful description of the package Assignment 1 and 
  library(tidyr)
  library(maps)
 library(knitr)
+library(tidytext)
+
 library(Assignment1)
 
 # opts_knit$set(root.dir=normalizePath('../'))

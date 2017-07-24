@@ -14,6 +14,8 @@
 #'
 #' ## The following will throw error in case extension (.csv.bz2) is missing in the argument.
 #' mydata <- fars_read("accident_2013")
+#' @importFrom readr read_csv
+#' @importFrom dplyr tbl_df
 #' @export
 fars_read <- function(filename) {
   if(!file.exists(filename))
@@ -59,7 +61,8 @@ make_filename <- function(year) {
 #' @return The data present in the file (in case year = 2013, 2014, 2015). This is an object of class 'tbl_df'.
 #'          In case the file is not present corresponding to the year supplied in the argument, it returns a
 #'          list of length 1 with object as NULL.
-#'
+#' @importFrom readr read_csv
+#' @importFrom dplyr tbl_df mutate select
 #' @examples
 #' ## Considering your data is in the present working directory
 #' ## The following would work fine and would return the subsetted data.
@@ -99,7 +102,9 @@ fars_read_years <- function(years) {
 #' @return The count of number of observations present in the file (in case year = 2013, 2014, 2015) for each month.
 #'         This is an object of class 'tbl_df'. In case the file is not present corresponding to the year supplied
 #'          in the argument, it throws an error.
-#'
+#' @importFrom readr read_csv
+#' @importFrom dplyr tbl_df bind_rows group_by summarize
+#' @importFrom tidyr spread
 #' @examples
 #' ## Considering your data is in the present working directory
 #' ## The following would work fine and would return the subsetted data.
@@ -131,7 +136,9 @@ fars_summarize_years <- function(years) {
 #' @param years The year for which the accident data should be take (can take any value from 2013, 2014, 2015)
 #'
 #' @return A plot of accidents occuring in a particular state on the state map (US). A NULL object is returned.
-#'
+#' @importFrom readr read_csv
+#' @importFrom dplyr tbl_df bind_rows group_by summarize filter
+#' @importFrom tidyr spread
 #' @examples
 #' ## Considering your data is in the present working directory
 #' ## The following would work fine and would return the subsetted data.

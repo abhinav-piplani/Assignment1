@@ -25,11 +25,7 @@ Requires 'readr' and 'dplyr' packages to be loaded first.
 \examples{
 ## Considering your data is in the present working directory
 ## The following would work fine and would return the subsetted data.
-library(readr)
-library(dplyr)
 mydata <- fars_read_years(2014)
 str(mydata)
 
-## The following would work fine and would return a list of length 1 with NULL object.
-mydata <- fars_read_years(2021)
 }

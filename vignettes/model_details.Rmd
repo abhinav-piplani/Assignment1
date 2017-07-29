@@ -16,16 +16,10 @@ This vignette provides a meaningful description of the package Assignment 1 and 
 
 
 ```{r,   message=F, warning=F}
- library(readr)
- library(dplyr)
- library(tidyr)
- library(maps)
-library(knitr)
-library(tidytext)
-
-library(Assignment1)
-
+ library(Assignment1)
+#setwd( paste0(system.file(package="Assignment1"),"/data"))
 # opts_knit$set(root.dir=normalizePath('../'))
+#knitr::opts_knit$set("data")
 
 ```
 

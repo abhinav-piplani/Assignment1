@@ -21,11 +21,7 @@ Requires 'readr' and 'dplyr' packages to be loaded first.
 }
 \examples{
 ## Considering your data is in the present working directory
-library(readr)
-library(dplyr)
 mydata <- fars_read("accident_2013.csv.bz2")
 str(mydata)
 
-## The following will throw error in case extension (.csv.bz2) is missing in the argument.
-mydata <- fars_read("accident_2013")
 }

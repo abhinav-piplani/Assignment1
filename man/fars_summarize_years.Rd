@@ -25,12 +25,7 @@ Requires 'readr', 'dplyr' and 'tidyr' packages to be loaded first.
 \examples{
 ## Considering your data is in the present working directory
 ## The following would work fine and would return the subsetted data.
-library(readr)
-library(dplyr)
-library(tidyr)
 mydata <- fars_summarize_years(2014)
 str(mydata)
 
-## The following would also throw an error.
-mydata <- fars_summarize_years(2021)
 }

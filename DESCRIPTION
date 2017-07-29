@@ -2,15 +2,16 @@ Package: Assignment1
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Abhinav Piplani [aut, cre] , <abhinav.piplani@yahoo.co.in>
-Maintainer: Abhinav Piplani [aut, cre] , <abhinav.piplani@yahoo.co.in>
+Author: "Abhinav Piplani" [aut, cre] , <abhinav.piplani@yahoo.co.in>
+Maintainer: "Abhinav Piplani" [aut, cre] , <abhinav.piplani@yahoo.co.in>
 Description: The package is created as a requirement of the coursera specialization - Mastering Software Developing in R, 
             course - Building R Package. This package provides set of functions to analyze fatal accidents in US from
             2013 - 2015.
-License: GNU
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-Suggests: knitr,    rmarkdown
-Imports: readr, dplyr, tidyr, maps, tidytext
+Depends: R (>= 2.10)
+Suggests:   rmarkdown, testthat
+Imports: readr, dplyr, tidyr, maps, tidytext, knitr
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1

@@ -7,25 +7,31 @@
 #' @return The data present in the file.This is an object of class 'tbl_df'.
 #' @examples
 #' ## Considering your data is in the present working directory
-#' library(readr)
-#' library(dplyr)
 #' mydata <- fars_read("accident_2013.csv.bz2")
 #' str(mydata)
 #'
-#' ## The following will throw error in case extension (.csv.bz2) is missing in the argument.
-#' mydata <- fars_read("accident_2013")
 #' @importFrom readr read_csv
 #' @importFrom dplyr tbl_df
 #' @export
 fars_read <- function(filename) {
-  if(!file.exists(filename))
-    stop("file '", filename, "' does not exist")
-  data <- suppressMessages({
+#  if(!file.exists(filename))
+  #  stop("file '", filename, "' does not exist")
+
+
+ # data <- suppressMessages({
   #  readr::read_csv(filename, progress = FALSE)
+    #baseLoc <- system.file(package="Assignment1")
+   # extPath <- file.path(baseLoc, "data")
+    #system.file("exdata", "accident_2013.csv.bz2.rda", package = "Assignment1")
+   #readr::read_csv(system.file(file.path("extdata",filename), package="Assignment1"), quote = "", progress = FALSE)
 
-    readr::read_csv(system.file(file.path("exdata",filename), package="Assignment1"), progress = FALSE)
+  data <-  readr::read_csv(system.file("extdata",filename, package="Assignment1"))
+    #  readr::read_csv(system.file("extdata",filename, package="Assignment1"))
+   # system.file("extdata", sprintf("accident_%d.csv.bz2", year), package ="Assignment1")
+    #readr::read_csv(paste0(extPath,"/",filename))
 
-  })
+    #
+ # })
   dplyr::tbl_df(data)
 }
 
@@ -62,29 +68,33 @@ make_filename <- function(year) {
 #'          In case the file is not present corresponding to the year supplied in the argument, it returns a
 #'          list of length 1 with object as NULL.
 #' @importFrom readr read_csv
-#' @importFrom dplyr tbl_df mutate select
+#' @importFrom dplyr tbl_df mutate select %>%
+#' @importFrom stats setNames
 #' @examples
 #' ## Considering your data is in the present working directory
 #' ## The following would work fine and would return the subsetted data.
-#' library(readr)
-#' library(dplyr)
 #' mydata <- fars_read_years(2014)
 #' str(mydata)
 #'
-#' ## The following would work fine and would return a list of length 1 with NULL object.
-#' mydata <- fars_read_years(2021)
 #' @export
 fars_read_years <- function(years) {
-  lapply(years, function(year) {
-    file <- make_filename(year)
+ # lapply(years, function(year) {
+    file <- make_filename(years)
     tryCatch({
       dat <- fars_read(file)
-      dplyr::mutate(dat, year = year) %>%
-        dplyr::select(MONTH, year)
+      yr <- "year"
+      mnth <- "MONTH"
+
+      indexx <- which(names(dat) == 'year')
+      indexx2 <- which(names(dat) == 'MONTH')
+
+      dat %>% dplyr::mutate_(.dots = setNames(years,yr)) %>%   #dat[,indexx]
+        dplyr::select_( mnth ,  yr) #dat[,indexx2]   dat[,indexx]
     }, error = function(e) {
-      warning("invalid year: ", year)
+      warning("invalid year: ", years)
       return(NULL)
-    })
+   # }
+
   })
 }
 
@@ -103,26 +113,30 @@ fars_read_years <- function(years) {
 #'         This is an object of class 'tbl_df'. In case the file is not present corresponding to the year supplied
 #'          in the argument, it throws an error.
 #' @importFrom readr read_csv
-#' @importFrom dplyr tbl_df bind_rows group_by summarize
+#' @importFrom dplyr tbl_df bind_rows group_by summarize %>%
 #' @importFrom tidyr spread
 #' @examples
 #' ## Considering your data is in the present working directory
 #' ## The following would work fine and would return the subsetted data.
-#' library(readr)
-#' library(dplyr)
-#' library(tidyr)
 #' mydata <- fars_summarize_years(2014)
 #' str(mydata)
 #'
-#' ## The following would also throw an error.
-#' mydata <- fars_summarize_years(2021)
 #' @export
 fars_summarize_years <- function(years) {
   dat_list <- fars_read_years(years)
-  dplyr::bind_rows(dat_list) %>%
-    dplyr::group_by(year, MONTH) %>%
-    dplyr::summarize(n = n()) %>%
-    tidyr::spread(year, n)
+  yr <- "year"
+  mnth <- "MONTH"
+  n <- "n"
+  indexx <- which(names(dat_list) == 'year')
+  indexx2 <- which(names(dat_list) == 'MONTH')
+  dat_list <- dplyr::mutate_(dat_list, yr =  years) %>%  # dat[,indexx]
+    dplyr::select_( mnth , yr ) #dat[,indexx2] , dat[,indexx]
+
+  dat_list <-   dplyr::bind_rows(dat_list) %>%
+    dplyr::group_by_(yr, mnth) %>% #dat[,indexx],dat[,indexx2]
+    dplyr::summarize_(n = 'n()') %>%
+    tidyr::spread_(yr, "n")  #dat[,indexx]
+  return(dat_list)
 }
 
 
@@ -133,43 +147,48 @@ fars_summarize_years <- function(years) {
 #' @note Requires 'readr', 'dplyr', 'tidyr' and 'maps' packages to be loaded first.
 #' @param state.num The state number corresponding to a state in the US. This should be integer between 1 & 56
 #'                  ( both lower & upper limits included).
-#' @param years The year for which the accident data should be take (can take any value from 2013, 2014, 2015)
+#' @param year The year for which the accident data should be take (can take any value from 2013, 2014, 2015)
 #'
 #' @return A plot of accidents occuring in a particular state on the state map (US). A NULL object is returned.
 #' @importFrom readr read_csv
-#' @importFrom dplyr tbl_df bind_rows group_by summarize filter
+#' @importFrom dplyr tbl_df bind_rows group_by summarize filter %>%
 #' @importFrom tidyr spread
 #' @examples
 #' ## Considering your data is in the present working directory
 #' ## The following would work fine and would return the subsetted data.
-#' library(readr)
-#' library(dplyr)
-#' library(tidyr)
-#' library(maps)
 #' mydata <- fars_map_state(55, 2013)
 #' str(mydata)
 #'
-#' ## The following would also throw an error.
-#' mydata <- fars_map_state(550, 2013) # Invalid state number
-#' mydata <- fars_map_state(55, 2010) # Invalid data file
 #' @export
 fars_map_state <- function(state.num, year) {
   filename <- make_filename(year)
-  data <- fars_read(filename)
+  dataa <- fars_read(filename)
   state.num <- as.integer(state.num)
-
-  if(!(state.num %in% unique(data$STATE)))
+  st <- "STATE"
+  indexx <- which(names(dataa) == 'STATE')
+  if(!(state.num %in% unique(as.data.frame( dataa[,st])[,1])  ) )
     stop("invalid STATE number: ", state.num)
-  data.sub <- dplyr::filter(data, STATE == state.num)
-  if(nrow(data.sub) == 0L) {
+  dataa.sub <- dataa %>% dplyr::filter(dataa[,indexx] == state.num)  #  st
+  #dplyr::filter_(dataa,st == state.num)
+  if(nrow(dataa.sub) == 0L) {
     message("no accidents to plot")
     return(invisible(NULL))
   }
-  is.na(data.sub$LONGITUD) <- data.sub$LONGITUD > 900
-  is.na(data.sub$LATITUDE) <- data.sub$LATITUDE > 90
-  with(data.sub, {
+  is.na(dataa.sub$LONGITUD) <- dataa.sub$LONGITUD > 900
+  is.na(dataa.sub$LATITUDE) <- dataa.sub$LATITUDE > 90
+  with(dataa.sub, {
     maps::map("state", ylim = range(LATITUDE, na.rm = TRUE),
               xlim = range(LONGITUD, na.rm = TRUE))
     graphics::points(LONGITUD, LATITUDE, pch = 46)
   })
 }
+# accident_2013.csv.bz2 <- readr::read_csv("F:/Coursera/Mastering Software Development in R/3 Building R Packages/2 Week2/Package Building/Assignment1/inst/exdata/accident_2013.csv.bz2")
+# accident_2014.csv.bz2 <- readr::read_csv("F:/Coursera/Mastering Software Development in R/3 Building R Packages/2 Week2/Package Building/Assignment1/inst/exdata/accident_2014.csv.bz2")
+# accident_2015.csv.bz2 <- readr::read_csv("F:/Coursera/Mastering Software Development in R/3 Building R Packages/2 Week2/Package Building/Assignment1/inst/exdata/accident_2015.csv.bz2")
+# devtools::use_data(accident_2013.csv.bz2)
+# devtools::use_data(accident_2014.csv.bz2)
+# devtools::use_data(accident_2015.csv.bz2)
+
+# year <- as.integer(year)
+# file <- sprintf("accident_%d.csv.bz2", year)
+# system.file("extdata", file, package="Assignment1")

@@ -10,7 +10,7 @@ fars_map_state(state.num, year)
 \item{state.num}{The state number corresponding to a state in the US. This should be integer between 1 & 56
 ( both lower & upper limits included).}
 
-\item{years}{The year for which the accident data should be take (can take any value from 2013, 2014, 2015)}
+\item{year}{The year for which the accident data should be take (can take any value from 2013, 2014, 2015)}
 }
 \value{
 A plot of accidents occuring in a particular state on the state map (US). A NULL object is returned.
@@ -24,14 +24,7 @@ Requires 'readr', 'dplyr', 'tidyr' and 'maps' packages to be loaded first.
 \examples{
 ## Considering your data is in the present working directory
 ## The following would work fine and would return the subsetted data.
-library(readr)
-library(dplyr)
-library(tidyr)
-library(maps)
 mydata <- fars_map_state(55, 2013)
 str(mydata)
 
-## The following would also throw an error.
-mydata <- fars_map_state(550, 2013) # Invalid state number
-mydata <- fars_map_state(55, 2010) # Invalid data file
 }
